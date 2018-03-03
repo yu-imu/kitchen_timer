@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 class ViewController: UIViewController {
     // 多分型
@@ -68,12 +69,13 @@ class ViewController: UIViewController {
     
     @objc func timerStop(_ timer:Timer) {
         duration += 1
-        //
-        if displayUpdate() == 0 {
-           timeDisplay.text = "終了！"
-            duration = 0
-            timer.invalidate()
-            
+        if displayUpdate() <= 0 {
+            timeDisplay.text = "終了！"
+            var soundIdRing:SystemSoundID = 1000
+            if let soundUrl = CFBundleCopyResourceURL(CFBundleGetMainBundle(), nil, nil, nil){
+                AudioServicesCreateSystemSoundID(soundUrl, &soundIdRing)
+                AudioServicesPlaySystemSound(soundIdRing)
+            }
         }
     }
     
